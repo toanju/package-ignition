@@ -1,0 +1,10 @@
+include:
+  project: gardenlinux/gardenlinux-package-build
+  file: pipeline/pipeline.yml
+
+variables:
+  SOURCE_NAME: ignition
+  BUILD_DIST: sid
+  SOURCE_DIST: sid
+  SOURCES_LIST: |
+      deb http://deb.debian.org/debian ${BUILD_DIST} main
