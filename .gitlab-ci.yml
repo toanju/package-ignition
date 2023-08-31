@@ -4,7 +4,5 @@ include:
 
 variables:
   SOURCE_NAME: ignition
-  BUILD_DIST: sid
-  SOURCE_DIST: sid
-  SOURCES_LIST: |
-      deb http://deb.debian.org/debian ${BUILD_DIST} main
+  BUILD_DIST: bookworm
+  SOURCE_DIST: bookworm

@@ -1,0 +1,88 @@
+Subject: Detect selinux support and label files as needed
+--- /dev/null
++++ b/debian/patches/relabeling-need.patch
+@@ -0,0 +1,79 @@
++--- a/go.mod
+++++ b/go.mod
++@@ -12,6 +12,7 @@
++ 	github.com/coreos/vcontext v0.0.0-20211021162308-f1dbbca7bef4
++ 	github.com/google/renameio v0.1.0
++ 	github.com/google/uuid v1.1.1
+++	github.com/opencontainers/selinux v1.11.0 // indirect
++ 	github.com/pin/tftp v2.1.0+incompatible
++ 	github.com/spf13/pflag v1.0.6-0.20210604193023-d5e0c0615ace
++ 	github.com/stretchr/testify v1.7.0
++@@ -20,7 +21,7 @@
++ 	go.opencensus.io v0.22.5 // indirect
++ 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9
++ 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
++-	golang.org/x/sys v0.0.0-20200610111108-226ff32320da
+++	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
++ 	golang.org/x/tools v0.0.0-20200610160956-3e83d1e96d0e // indirect
++ 	google.golang.org/api v0.26.0
++ 	google.golang.org/genproto v0.0.0-20200610104632-a5b850bcf112 // indirect
++--- a/go.sum
+++++ b/go.sum
++@@ -131,6 +131,8 @@
++ github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
++ github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
++ github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
+++github.com/opencontainers/selinux v1.11.0 h1:+5Zbo97w3Lbmb3PeqQtpmTkMwsW5nRI3YaLpt7tQ7oU=
+++github.com/opencontainers/selinux v1.11.0/go.mod h1:E5dMC3VPuVvVHDYmi78qvhJp8+M586T4DlDRYpFkyec=
++ github.com/pin/tftp v2.1.0+incompatible h1:Yng4J7jv6lOc6IF4XoB5mnd3P7ZrF60XQq+my3FAMus=
++ github.com/pin/tftp v2.1.0+incompatible/go.mod h1:xVpZOMCXTy+A5QMjEVN0Glwa1sUvaJhFXbr/aAxuxGY=
++ github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
++@@ -257,6 +259,8 @@
++ golang.org/x/sys v0.0.0-20200523222454-059865788121/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
++ golang.org/x/sys v0.0.0-20200610111108-226ff32320da h1:bGb80FudwxpeucJUjPYJXuJ8Hk91vNtfvrymzwiei38=
++ golang.org/x/sys v0.0.0-20200610111108-226ff32320da/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+++golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 h1:0A+M6Uqn+Eje4kHMK80dtF3JCXC4ykBgQG4Fe06QRhQ=
+++golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
++ golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
++ golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
++ golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
++--- a/internal/distro/distro.go
+++++ b/internal/distro/distro.go
++@@ -16,6 +16,7 @@
++ 
++ import (
++ 	"fmt"
+++	"github.com/opencontainers/selinux/go-selinux"
++ 	"os"
++ )
++ 
++@@ -66,7 +67,7 @@
++ 	kargsCmd = "ignition-kargs-helper"
++ 
++ 	// Flags
++-	selinuxRelabel  = "true"
+++	selinuxEnabled  *bool
++ 	blackboxTesting = "false"
++ 	// writeAuthorizedKeysFragment indicates whether to write SSH keys
++ 	// specified in the Ignition config as a fragment to
++@@ -117,7 +118,7 @@
++ func LuksRealRootKeyFilePath() string { return luksRealRootKeyFilePath }
++ func ResultFilePath() string          { return resultFilePath }
++ 
++-func SelinuxRelabel() bool  { return bakedStringToBool(selinuxRelabel) && !BlackboxTesting() }
+++func SelinuxRelabel() bool  { return selinuxRelabelNeed() && !BlackboxTesting() }
++ func BlackboxTesting() bool { return bakedStringToBool(blackboxTesting) }
++ func WriteAuthorizedKeysFragment() bool {
++ 	return bakedStringToBool(fromEnv("WRITE_AUTHORIZED_KEYS_FRAGMENT", writeAuthorizedKeysFragment))
++@@ -142,3 +143,11 @@
++ 		panic(fmt.Sprintf("value '%s' cannot be interpreted as a boolean", s))
++ 	}
++ }
+++
+++func selinuxRelabelNeed() bool {
+++	if selinuxEnabled == nil {
+++		selinuxEnabled = new(bool)
+++		*selinuxEnabled = selinux.GetEnabled()
+++	}
+++	return *selinuxEnabled
+++}
+--- a/debian/patches/series 
++++ b/debian/patches/series 
+@@ -1 +1,2 @@
+ debian-changes
++relabeling-need.patch
