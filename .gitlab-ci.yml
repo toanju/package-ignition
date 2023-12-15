@@ -4,5 +4,5 @@ include:
 
 variables:
   SOURCE_NAME: ignition
-  BUILD_DIST: bookworm
-  SOURCE_DIST: bookworm
+  BUILD_DIST: trixie
+  SOURCE_DIST: trixie
