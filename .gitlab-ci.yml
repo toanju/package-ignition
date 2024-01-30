@@ -1,8 +1,0 @@
-include:
-  project: gardenlinux/gardenlinux-package-build
-  file: pipeline/pipeline.yml
-
-variables:
-  SOURCE_NAME: ignition
-  BUILD_DIST: trixie
-  SOURCE_DIST: trixie
