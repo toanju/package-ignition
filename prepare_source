@@ -24,7 +24,8 @@ else
 fi
 
 pushd "$dir/src"
-DEBEMAIL=contact@gardenlinux.io DEBFULLNAME='Garden Linux Builder' dch --newversion 2.18.0+ds1-1 --distribution gardenlinux --force-distribution -- 'Update to 2.18.0'
+version="2.18.0+ds1-1"
+message="Update to 2.18.0"
 popd
 popd
 apply_patches
