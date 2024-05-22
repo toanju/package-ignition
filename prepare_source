@@ -1,31 +1,10 @@
-workdir=$(pwd)
-tmp_dir="$(mktemp -d)"
-trap 'cd / && rm -rf "$tmp_dir"' EXIT
-pushd "$tmp_dir"
+git_src --branch v2.18.0 https://github.com/coreos/ignition.git
+rm -rf "$dir/src/vendor" "$dir/src/DCO"
+# exclude what debian excludes
+tar -f "$dir/orig.tar" --delete _/vendor --delete _/DCO
 
-apt-get source --only-source --download-only ignition=2.14.0+ds1-1
+apt_src --ignore-orig ignition
 
-orig=(*.orig.tar.*)
-auto_decompress "$orig" | tar --extract --strip-components 1 --directory "$dir/src"
-pushd "$dir/src"
-patch -p1 < "$workdir/patches/not-series-update-to-2.18.0.patch"
-tar -cf "$dir/orig.tar" .
-popd
-rm "${orig[@]}"
-
-diff=(*.debian.tar.*)
-if [ -n "${diff[*]}" ]; then
-	auto_decompress "$diff" | tar --extract --directory "$dir/src"
-	rm "${diff[@]}"
-else
-	native=(*.tar.*)
-	auto_decompress "$native" | tar --extract --strip-components 1 --directory "$dir/src"
-	rm "${native[@]}"
-fi
-
-pushd "$dir/src"
-version="2.18.0+ds1-1"
-message="Update to 2.18.0"
-popd
-popd
 apply_patches
+version="2.18.0-0"
+message="Update to 2.18.0"
