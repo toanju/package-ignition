@@ -1,9 +1,16 @@
 --- a/debian/control
 +++ b/debian/control
-@@ -15,6 +15,7 @@
+@@ -10,11 +10,14 @@
+                golang-any,
+                golang-github-aws-aws-sdk-go-dev,
+                golang-github-beevik-etree-dev,
++               golang-github-containers-libhvee-dev,
+                golang-github-coreos-go-json-dev,
+                golang-github-coreos-go-systemd-dev,
                 golang-github-coreos-vcontext-dev,
                 golang-github-google-renameio-dev,
                 golang-github-google-uuid-dev,
++               golang-github-mdlayher-vsock-dev,
 +               golang-github-opencontainers-selinux-dev,
                 golang-github-pin-tftp-dev,
                 golang-github-spf13-pflag-dev (>= 1.0.6~git20210604),
