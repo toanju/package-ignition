@@ -1,7 +1,9 @@
 Subject: Detect selinux support and label files as needed
 --- /dev/null
 +++ b/debian/patches/relabeling-need.patch
-@@ -0,0 +1,61 @@
+@@ -0,0 +1,67 @@
++Index: b/go.mod
++===================================================================
 +--- a/go.mod
 ++++ b/go.mod
 +@@ -15,6 +15,7 @@ require (
@@ -11,10 +13,12 @@ Subject: Detect selinux support and label files as needed
 ++	github.com/opencontainers/selinux v1.11.0
 + 	github.com/pin/tftp v2.1.0+incompatible
 + 	github.com/spf13/pflag v1.0.6-0.20210604193023-d5e0c0615ace
-+ 	github.com/stretchr/testify v1.8.4
++ 	github.com/stretchr/testify v1.9.0
++Index: b/go.sum
++===================================================================
 +--- a/go.sum
 ++++ b/go.sum
-+@@ -95,6 +95,8 @@ github.com/mitchellh/copystructure v1.2.0 h1:vpKXTN4ewci03Vljg/q9QvCGUDttBOGBIa1
++@@ -92,6 +92,8 @@ github.com/mitchellh/copystructure v1.2.
 + github.com/mitchellh/copystructure v1.2.0/go.mod h1:qLl+cE2AmVv+CoeAwDPye/v+N2HKCj9FbZEVFJRxO9s=
 + github.com/mitchellh/reflectwalk v1.0.2 h1:G2LzWKi524PWgd3mLHV8Y5k7s6XUvT0Gef6zxSIeXaQ=
 + github.com/mitchellh/reflectwalk v1.0.2/go.mod h1:mSTlrgnPZtwu0c4WaC2kGObEpuNDbx0jmZXqmk4esnw=
@@ -23,9 +27,11 @@ Subject: Detect selinux support and label files as needed
 + github.com/pin/tftp v2.1.0+incompatible h1:Yng4J7jv6lOc6IF4XoB5mnd3P7ZrF60XQq+my3FAMus=
 + github.com/pin/tftp v2.1.0+incompatible/go.mod h1:xVpZOMCXTy+A5QMjEVN0Glwa1sUvaJhFXbr/aAxuxGY=
 + github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
++Index: b/internal/distro/distro.go
++===================================================================
 +--- a/internal/distro/distro.go
 ++++ b/internal/distro/distro.go
-+@@ -16,6 +16,7 @@
++@@ -16,6 +16,7 @@ package distro
 + 
 + import (
 + 	"fmt"
@@ -33,7 +39,7 @@ Subject: Detect selinux support and label files as needed
 + 	"os"
 + )
 + 
-+@@ -66,7 +67,7 @@
++@@ -68,7 +69,7 @@ var (
 + 	kargsCmd = "ignition-kargs-helper"
 + 
 + 	// Flags
@@ -42,16 +48,16 @@ Subject: Detect selinux support and label files as needed
 + 	blackboxTesting = "false"
 + 	// writeAuthorizedKeysFragment indicates whether to write SSH keys
 + 	// specified in the Ignition config as a fragment to
-+@@ -117,7 +118,7 @@
-+ func LuksRealRootKeyFilePath() string { return luksRealRootKeyFilePath }
-+ func ResultFilePath() string          { return resultFilePath }
++@@ -123,7 +124,7 @@ func LuksRealRootKeyFilePath() string
++ func ResultFilePath() string            { return resultFilePath }
++ func LuksRealVolumeKeyFilePath() string { return luksCexSecureKeyRepo }
 + 
 +-func SelinuxRelabel() bool  { return bakedStringToBool(selinuxRelabel) && !BlackboxTesting() }
 ++func SelinuxRelabel() bool  { return selinuxRelabelNeed() && !BlackboxTesting() }
 + func BlackboxTesting() bool { return bakedStringToBool(blackboxTesting) }
 + func WriteAuthorizedKeysFragment() bool {
 + 	return bakedStringToBool(fromEnv("WRITE_AUTHORIZED_KEYS_FRAGMENT", writeAuthorizedKeysFragment))
-+@@ -142,3 +143,11 @@
++@@ -148,3 +149,11 @@ func bakedStringToBool(s string) bool {
 + 		panic(fmt.Sprintf("value '%s' cannot be interpreted as a boolean", s))
 + 	}
 + }
@@ -63,8 +69,8 @@ Subject: Detect selinux support and label files as needed
 ++	}
 ++	return *selinuxEnabled
 ++}
---- a/debian/patches/series 
-+++ b/debian/patches/series 
+--- a/debian/patches/series
++++ b/debian/patches/series
 @@ -1 +1,2 @@
  debian-changes
 +relabeling-need.patch
