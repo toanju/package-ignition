@@ -8,4 +8,4 @@ jobs:
     uses: gardenlinux/package-build/.github/workflows/build.yml@main
     with:
       release: ${{ github.ref == 'refs/heads/main' }}
-      build_dep: gardenlinux/package-golang-github-containers-libhvee 0.6.0+ds1-1gardenlinux0
+      build_dep: gardenlinux/package-golang-github-containers-libhvee 0.7.1+ds1-1gardenlinux0
