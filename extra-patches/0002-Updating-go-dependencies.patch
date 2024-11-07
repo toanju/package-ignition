@@ -1,0 +1,38 @@
+From 6510ec12a0bd06a192e89c11b951ce85513ca640 Mon Sep 17 00:00:00 2001
+From: Tobias Jungel <1773291+toanju@users.noreply.github.com>
+Date: Sat, 2 Nov 2024 10:21:33 +0100
+Subject: [PATCH 2/2] Updating go dependencies
+
+---
+ go.mod | 1 +
+ go.sum | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/go.mod b/go.mod
+index a1a25ec7..0d9d6f8b 100644
+--- a/go.mod
++++ b/go.mod
+@@ -15,6 +15,7 @@ require (
+ 	github.com/google/uuid v1.6.0
+ 	github.com/mdlayher/vsock v1.2.1
+ 	github.com/mitchellh/copystructure v1.2.0
++	github.com/opencontainers/selinux v1.11.1
+ 	github.com/pin/tftp v2.1.0+incompatible
+ 	github.com/spf13/pflag v1.0.6-0.20210604193023-d5e0c0615ace
+ 	github.com/stretchr/testify v1.9.0
+diff --git a/go.sum b/go.sum
+index 556ebeec..969bb8c1 100644
+--- a/go.sum
++++ b/go.sum
+@@ -93,6 +93,8 @@ github.com/mitchellh/copystructure v1.2.0 h1:vpKXTN4ewci03Vljg/q9QvCGUDttBOGBIa1
+ github.com/mitchellh/copystructure v1.2.0/go.mod h1:qLl+cE2AmVv+CoeAwDPye/v+N2HKCj9FbZEVFJRxO9s=
+ github.com/mitchellh/reflectwalk v1.0.2 h1:G2LzWKi524PWgd3mLHV8Y5k7s6XUvT0Gef6zxSIeXaQ=
+ github.com/mitchellh/reflectwalk v1.0.2/go.mod h1:mSTlrgnPZtwu0c4WaC2kGObEpuNDbx0jmZXqmk4esnw=
++github.com/opencontainers/selinux v1.11.1 h1:nHFvthhM0qY8/m+vfhJylliSshm8G1jJ2jDMcgULaH8=
++github.com/opencontainers/selinux v1.11.1/go.mod h1:E5dMC3VPuVvVHDYmi78qvhJp8+M586T4DlDRYpFkyec=
+ github.com/pin/tftp v2.1.0+incompatible h1:Yng4J7jv6lOc6IF4XoB5mnd3P7ZrF60XQq+my3FAMus=
+ github.com/pin/tftp v2.1.0+incompatible/go.mod h1:xVpZOMCXTy+A5QMjEVN0Glwa1sUvaJhFXbr/aAxuxGY=
+ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
+-- 
+2.47.0
+
