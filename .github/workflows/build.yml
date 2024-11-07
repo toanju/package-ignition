@@ -2,10 +2,9 @@ on:
   push:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 jobs:
   build:
     uses: gardenlinux/package-build/.github/workflows/build.yml@main
     with:
       release: ${{ github.ref == 'refs/heads/main' }}
-      build_dep: gardenlinux/package-golang-github-containers-libhvee 0.7.1+ds1-1gardenlinux0

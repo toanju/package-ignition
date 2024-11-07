@@ -1,1 +1,2 @@
-build-deps.patch
+rules.patch
+control.patch
