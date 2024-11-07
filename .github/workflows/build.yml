@@ -5,6 +5,7 @@ on:
     - cron: "0 0 * * *"
 jobs:
   build:
-    uses: gardenlinux/package-build/.github/workflows/build.yml@main
+    uses: toanju/package-build/.github/workflows/build.yml@main
     with:
       release: ${{ github.ref == 'refs/heads/main' }}
+      arch: '["amd64"]'
