@@ -1,7 +1,7 @@
-From eeed111c87de0f8fc15c5c56d639f25511affe51 Mon Sep 17 00:00:00 2001
-From: Tobias Jungel <1773291+toanju@users.noreply.github.com>
+From 83ea002d2c2215bd1f6f9836f163257ad02106ae Mon Sep 17 00:00:00 2001
+From: Tobias Jungel <tobias.jungel@gmail.com>
 Date: Sat, 2 Nov 2024 10:10:30 +0100
-Subject: [PATCH 1/2] Detect selinux support and label files as needed
+Subject: [PATCH 1/6] Detect selinux support and label files as needed
 
 ---
  internal/distro/distro.go | 14 ++++++++++++--

@@ -1,0 +1,23 @@
+--- a/debian/rules
++++ b/debian/rules
+@@ -3,8 +3,10 @@
+ include /usr/share/dpkg/default.mk
+
+ export DH_GOLANG_BUILDPKG := \
+-    github.com/coreos/ignition/internal \
+-    github.com/coreos/ignition/validate
++    github.com/coreos/ignition/v2/internal \
++    github.com/coreos/ignition/v2/validate
++
++export DH_GOLANG_INSTALL_ALL := 1
+
+ %:
+ 	dh $@ --builddirectory=_build --buildsystem=golang --with=golang
+@@ -14,6 +16,6 @@
+
+ override_dh_auto_build:
+ 	dh_auto_build -- \
+-		-ldflags "-X 'github.com/coreos/ignition/internal/version.Raw=$(DEB_VENDOR) $(DEB_VERSION)'"
++		-ldflags "-X 'github.com/coreos/ignition/v2/internal/version.Raw=$(DEB_VENDOR) $(DEB_VERSION)'"
+
+ override_dh_auto_test::
